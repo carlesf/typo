@@ -130,9 +130,8 @@ class Article < Content
     merger = Article.find_by_id(merger_id)
     if (merger)
       self.body = self.body + merger.body
+      self.excerpt = self.excerpt + merger.excerpt
       self.comments << merger.comments
-      merger.delete
-      self.save
       return self
     end
     raise ActiveRecord::RecordNotFound

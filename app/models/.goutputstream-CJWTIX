@@ -126,18 +126,6 @@ class Article < Content
     published_at.year.to_s
   end
 
-  def merge_with(merger_id)
-    merger = Article.find_by_id(merger_id)
-    if (merger)
-      self.body = self.body + merger.body
-      self.comments << merger.comments
-      merger.delete
-      self.save
-      return self
-    end
-    raise ActiveRecord::RecordNotFound
-  end
-
   def month_url
     sprintf("%.2d", published_at.month)
   end
@@ -479,4 +467,15 @@ class Article < Content
     return from..to
   end
 
+  def merge_with(merger_id)
+    merger = find_by_id(merger_id)
+    if (merger)
+      self.body = self.body + merger.body
+      self.excerpt = self.excerpt + merger.excerpt
+      self.comments << merger.comments
+      return self
+    end
+    raise ActiveRecord::RecordNotFound
+  end
+ 
 end

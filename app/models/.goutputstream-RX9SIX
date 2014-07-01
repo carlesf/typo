@@ -131,7 +131,6 @@ class Article < Content
     if (merger)
       self.body = self.body + merger.body
       self.comments << merger.comments
-      merger.delete
       self.save
       return self
     end

@@ -71,6 +71,19 @@ class Article < Content
     end
   end
 
+  
+  def merge_with(merger_id)
+    merger = Article.find_by_id(merger_id)
+    if (merger)
+      self.body = self.body + merger.body
+      self.excerpt = self.excerpt + merger.excerpt
+      self.comments << merger.comments
+      return self
+    end
+    raise ActiveRecord::RecordNotFound
+  end
+ 
+
   def set_permalink
     return if self.state == 'draft'
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
@@ -124,18 +137,6 @@ class Article < Content
 
   def year_url
     published_at.year.to_s
-  end
-
-  def merge_with(merger_id)
-    merger = Article.find_by_id(merger_id)
-    if (merger)
-      self.body = self.body + merger.body
-      self.comments << merger.comments
-      merger.delete
-      self.save
-      return self
-    end
-    raise ActiveRecord::RecordNotFound
   end
 
   def month_url
