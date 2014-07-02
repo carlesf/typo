@@ -34,7 +34,27 @@ class Admin::ContentController < Admin::BaseController
       flash[:error] = _("Error, you are not allowed to perform this action")
       return
     end
+    @mergeable = current_user.admin?
     new_or_edit
+  end
+
+  #HW2
+  def merge
+    unless current_user.admin?
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, you are not allowed to perform this action")
+      return
+    end
+    begin 
+      article = Article.find(params[:id])
+      article.merge_with(params[:merge_with])
+    rescue Exception => e
+      redirect_to :action => 'index'
+      flash[:error] = _("Something went wrong: " + e.message)
+      return
+    end
+    flash[:notice] = _("This article was merged successfully")
+    redirect_to :action => 'index'  
   end
 
   def destroy
