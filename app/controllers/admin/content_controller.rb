@@ -24,6 +24,7 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def new
+    @mergeable = false    #HW2
     new_or_edit
   end
 
@@ -34,7 +35,7 @@ class Admin::ContentController < Admin::BaseController
       flash[:error] = _("Error, you are not allowed to perform this action")
       return
     end
-    @mergeable = current_user.admin?
+    @mergeable = current_user.admin? #HW2
     new_or_edit
   end
 
@@ -43,6 +44,11 @@ class Admin::ContentController < Admin::BaseController
     unless current_user.admin?
       redirect_to :action => 'index'
       flash[:error] = _("Error, you are not allowed to perform this action")
+      return
+    end
+    unless params[:id] != params[:merge_with]
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, you cannot merge an article with itself")
       return
     end
     begin 
